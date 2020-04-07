@@ -16,7 +16,11 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    // Implement "Like Repository" functionality
+    const response = await api.post(`/repositories/${id}/like`);
+
+    const index = repositories.findIndex((repo) => repo.id === id);
+    repositories[index] = response.data;
+    setRepositories([...repositories]);
   }
 
   return (
@@ -39,20 +43,15 @@ export default function App() {
               </View>
 
               <View style={styles.likesContainer}>
-                <Text
-                  style={styles.likeText}
-                  // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
-                  testID={`repository-likes-1`}
-                >
-                  3 curtidas
+                <Text style={styles.likeText} testID={`repository-likes-${item.id}`}>
+                  {item.likes} curtidas
                 </Text>
               </View>
 
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => handleLikeRepository(1)}
-                // Remember to replace "1" below with repository ID: {`like-button-${repository.id}`}
-                testID={`like-button-1`}
+                onPress={() => handleLikeRepository(item.id)}
+                testID={`like-button-${item.id}`}
               >
                 <Text style={styles.buttonText}>Curtir</Text>
               </TouchableOpacity>
@@ -109,7 +108,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#fff',
     padding: 15,
